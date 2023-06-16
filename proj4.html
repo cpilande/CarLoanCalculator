@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <head>
+        <title> CS 326 Javascript Car Loan Calculator </title>
+        <script>
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+            });
+
+            function calculate() {
+                var amount, down, interest, term;
+                var payment, totalPayment, originalAmt, principal, balance;
+                var outputText, outputAmt, interestAmt;
+                
+                //get the input
+                amount = document.forms["loan_form"]["amount"].value;
+                down = document.forms["loan_form"]["down"].value;
+                interest = document.forms["loan_form"]["interest"].value;
+                term = document.forms["loan_form"]["term"].value;
+             
+
+                //error-checking
+                if (interest < 0 || interest > 15) {
+                    window.alert("Error: Interest should be between 0% - 15% (inclusive). Please try again.");
+                }
+               else if (term < 1 || term > 6) {
+                    window.alert("Error: The loan term should be between 1 - 6 years. Please try again.");
+                }
+                else if (amount > 500000) { 
+                    window.alert("Error: The loan amount should be less than or equal to $500,000. Please try again.");
+                }
+                else { //if no errors are found, execute formula
+                    interest = interest / 100;
+                    interest = interest / 12;
+                    term = term * 12;
+
+                    amount = amount - down;
+                    balance = amount;
+                    payment = amount * ((interest * (1 + interest) ** term))/((1+interest) ** term - 1.0);
+                    totalPayment = payment*term;
+
+                //output monthly & total payment
+                document.getElementById('monthly').value =dollarUS.format(payment);
+                document.getElementById('total').value =dollarUS.format(totalPayment);
+                
+                //output table
+                var table = "<th>" + "Car Payment Number" + "</th>" +
+                "<th>" + "Interest" + "</th>" +
+                "<th>" + "Principal" + "</th>" +
+                "<th>" + "Balance" + "</th>";
+
+
+                for(var i = 0; i < term; i++) {
+                interestAmt = interest * balance;
+                principal = payment - interestAmt;
+                balance = balance - principal;
+                table += "<tr>" +
+                "<td>" + (i + 1) + "</td>" + 
+                "<td>" + dollarUS.format(interestAmt) + "</td>" + 
+                 "<td>" + dollarUS.format(principal) + "</td>" + 
+                 "<td>" + dollarUS.format(balance) + "</td>" +
+                "</tr>";
+                            
+                }
+                document.getElementById("tableDemo").innerHTML = '<table>' + table + '<table>';
+            }
+        }
+        </script>
+    </head>
+    <body>
+        <h1> <center>  CS 326 Javascript Car Loan Calculator </center></h1>
+        <h1> <center> Carmela Pilande </center></h1>
+         <hr>
+         <br>
+        <div style="margin: auto; width: 300px; background-color: beige; padding: 30px; border: 5px solid black;">
+            <form name="loan_form" action="javascript:calculate();">
+            <table>
+                <tr>
+                    <td> Car Cost Amount    &nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp   </td>
+                    <td> <input type="text" label = "amount" name="amount" size="15" required></td>
+                </tr>
+                <tr>
+                    <td>Down Payment   &nbsp;&nbsp&nbsp;&nbsp &nbsp;&nbsp     </td>
+                    <td> <input type="text" label = "down" name="down" size="15" required></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">Annual Interest Rate   &nbsp;&nbsp&nbsp;&nbsp       </td>
+                    <td>  <input type="text" name="interest" size="15" required>     </td>
+                </tr>
+                <tr>
+                    <td>Term (in years) (1-6)  &nbsp;&nbsp&nbsp;&nbsp         </td>
+                    <td><input type="text" name="term" size="15" required>        </td>
+                </tr>
+            </table> 
+            <br><br>
+
+        <input type="submit" value="Press to calculate auto loan information">
+        <br><br>
+        <input type="reset" value ="Reset Form">
+        <br>
+        <br>
+            <hr>
+        <table> 
+            <tr> 
+        <td> <label for="">Monthly Payment: &nbsp;&nbsp</label> </td> 
+       <td>  <input type=""text" id="monthly" name=""> </td> 
+    </tr>
+        <br><br>
+        <tr>
+       <td>  <label for=""">Total Payment:</label> </td>
+       <td>  <input type=""text" id="total" name=""> </td>
+    </tr>
+    </table> 
+        <h2> Payment Schedule </h2>
+        <div style = "background-color: white; text-align: center;">
+            <table style = "font-size: 80%; width: 100%; text-align: center;">
+                <tr>
+                <p id="tableDemo"></p>
+            </tr>
+            </table>
+        </div>
+        <br><br>
+
+        </form>
+        </div>
+    </body>
+</html>
